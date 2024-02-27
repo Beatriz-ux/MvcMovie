@@ -22,9 +22,9 @@ namespace MvcMovie.Controllers
         // GET: Artist
         public async Task<IActionResult> Index()
         {
-              return _context.Artist != null ? 
-                          View(await _context.Artist.ToListAsync()) :
-                          Problem("Entity set 'MvcMovieContext.Artist'  is null.");
+            return _context.Artist != null ?
+                        View(await _context.Artist.ToListAsync()) :
+                        Problem("Entity set 'MvcMovieContext.Artist'  is null.");
         }
 
         // GET: Artist/Details/5
@@ -41,7 +41,8 @@ namespace MvcMovie.Controllers
             {
                 return NotFound();
             }
-
+            var movieCount = await _context.Movie.Include(ma => ma.Artists).Where(ma => ma.Artists.Any(a => a.ArtistId == id)).CountAsync();
+            ViewBag.MovieCount = movieCount;
             return View(artist);
         }
 
@@ -150,14 +151,14 @@ namespace MvcMovie.Controllers
             {
                 _context.Artist.Remove(artist);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ArtistExists(int id)
         {
-          return (_context.Artist?.Any(e => e.ArtistId == id)).GetValueOrDefault();
+            return (_context.Artist?.Any(e => e.ArtistId == id)).GetValueOrDefault();
         }
     }
 }

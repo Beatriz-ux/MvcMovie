@@ -67,63 +67,122 @@ namespace MvcMovie.Controllers
                 var studio = await _context.Studio.FirstOrDefaultAsync(m => m.StudioId == movie.StudioId);
                 if (studio != null)
                 {
-                    var artistasEncontrados = _context.Artist.Where(a => Artists.Contains(a.ArtistId.ToString())).ToList();
-                    if (artistasEncontrados != null)
+                    // Inicialize a lista de artistas do filme
+                    movie.Artists = new List<Artist>();
+
+                    // Verifique se existem artistas selecionados
+                    if (Artists != null)
                     {
-                        movie.Artists = artistasEncontrados;
+                        // Para cada ID de artista selecionado
+                        foreach (var artistId in Artists)
+                        {
+                            // Tente converter o ID de string para int
+                            if (int.TryParse(artistId, out int parsedArtistId))
+                            {
+                                // Busque o artista no banco de dados
+                                var artist = await _context.Artist.FindAsync(parsedArtistId);
+                                if (artist != null)
+                                {
+                                    // Adicione o artista à lista de artistas do filme
+                                    movie.Artists.Add(artist);
+                                }
+                            }
+                        }
                     }
 
+                    // Adicione o filme ao contexto e salve as alterações
                     _context.Add(movie);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    // Percamence na mesma pagina
+                    return RedirectToAction(nameof(Details), new { id = movie.Id });
                 }
                 return RedirectToAction(nameof(Index));
-
             }
-            ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "Name");
+
+            // Se houver erros de validação, retorne a view com os dados preenchidos
+            ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "Name", movie.StudioId);
             ViewData["Artists"] = new SelectList(_context.Set<Artist>(), "ArtistId", "Name");
             return View(movie);
         }
 
+
         // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Movie == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movie.FindAsync(id);
+            var movie = await _context.Movie.Include(m => m.Artists).FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
                 return NotFound();
             }
-            ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "StudioId", movie.StudioId);
+
+            // Obtenha todos os artistas
+            var allArtists = await _context.Artist.ToListAsync();
+
+            // Obtenha os IDs dos artistas associados a este filme
+            var movieArtistIds = await _context.Movie.Include(ma => ma.Artists).Where(ma => ma.Id == id).SelectMany(ma => ma.Artists.Select(a => a.ArtistId)).ToListAsync();
+
+            // Passe os artistas e os IDs associados ao filme para a view
+            ViewBag.AllArtists = allArtists;
+            ViewBag.MovieArtistIds = movieArtistIds;
+            ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "Name", movie.StudioId);
+            ViewData["Artists"] = new SelectList(_context.Set<Artist>(), "ArtistId", "Name");
+
             return View(movie);
         }
+
 
         // POST: Movies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,StudioId")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,StudioId")] Movie movie, string[] Artists)
         {
+            var originalMovie = _context.Movie.Include(m => m.Artists).FirstOrDefault(m => m.Id == id);
             if (id != movie.Id)
             {
                 return NotFound();
             }
+            if (originalMovie == null)
+            {
+                return NotFound();
+            }
+            if (Artists == null)
+            {
+                return NotFound();
+
+            }
 
             if (ModelState.IsValid)
             {
+                // Para cada ID de artista selecionado
+                foreach (var artistId in Artists)
+                {
+                    // Tente converter o ID de string para int
+                    if (int.TryParse(artistId, out int parsedArtistId))
+                    {
+                        // Busque o artista no banco de dados
+                        var artist = await _context.Artist.FindAsync(parsedArtistId);
+                        if (artist != null)
+                        {
+                            // Adicione o artista à lista de artistas do filme
+                            originalMovie.Artists.Add(artist);
+                        }
+                    }
+                }
                 try
                 {
-                    _context.Update(movie);
+                    _context.Update(originalMovie);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MovieExists(movie.Id))
+                    if (!MovieExists(originalMovie.Id))
                     {
                         return NotFound();
                     }
@@ -134,7 +193,9 @@ namespace MvcMovie.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "StudioId", movie.StudioId);
+            ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "Name", movie.StudioId);
+            ViewData["Artists"] = new SelectList(_context.Set<Artist>(), "ArtistId", "Name");
+
             return View(movie);
         }
 
