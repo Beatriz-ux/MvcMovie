@@ -37,6 +37,7 @@ namespace MvcMovie.Controllers
 
             var movie = await _context.Movie
                 .Include(m => m.Studio)
+                .Include(m => m.Artists)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
