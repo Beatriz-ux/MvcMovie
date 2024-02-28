@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/bia/projetos/MVC/MvcMovie/MvcMovie.csproj": {}
+    "/home/alberto/Documentos/atividadeFinal/MvcMovie/MvcMovie.csproj": {}
   },
   "projects": {
-    "/home/bia/projetos/MVC/MvcMovie/MvcMovie.csproj": {
+    "/home/alberto/Documentos/atividadeFinal/MvcMovie/MvcMovie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/bia/projetos/MVC/MvcMovie/MvcMovie.csproj",
+        "projectUniqueName": "/home/alberto/Documentos/atividadeFinal/MvcMovie/MvcMovie.csproj",
         "projectName": "MvcMovie",
-        "projectPath": "/home/bia/projetos/MVC/MvcMovie/MvcMovie.csproj",
-        "packagesPath": "/home/bia/.nuget/packages/",
-        "outputPath": "/home/bia/projetos/MVC/MvcMovie/obj/",
+        "projectPath": "/home/alberto/Documentos/atividadeFinal/MvcMovie/MvcMovie.csproj",
+        "packagesPath": "/home/alberto/.nuget/packages/",
+        "outputPath": "/home/alberto/Documentos/atividadeFinal/MvcMovie/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/bia/.nuget/NuGet/NuGet.Config"
+          "/home/alberto/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -86,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/bia/.dotnet/sdk/7.0.403/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.116/RuntimeIdentifierGraph.json"
         }
       }
     }
