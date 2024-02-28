@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
 using MvcMovie.Models;
-using MvcMovie.Utils;
+using MvcMovie.Data.Auth;
 
 namespace MvcMovie.Controllers;
 
@@ -27,8 +27,8 @@ public class LoginController : Controller
     public async Task<IActionResult> Login([Bind("Email,Password")] User user)
     {
         string _token = "";
-        user.Password = Utils.Utils.EncryptPassword(user.Password);
-        var userDb = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
+        var Passworld = Utils.Utils.EncryptPassword(user.Password);
+        var userDb = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == Passworld);
         if (userDb != null)
         {
             if (userDb.Email == "admin@admin.com")
