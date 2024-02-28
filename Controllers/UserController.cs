@@ -23,9 +23,9 @@ namespace MvcMovie.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-              return _context.User != null ? 
-                          View(await _context.User.ToListAsync()) :
-                          Problem("Entity set 'MvcMovieContext.User'  is null.");
+            return _context.User != null ?
+                        View(await _context.User.ToListAsync()) :
+                        Problem("Entity set 'MvcMovieContext.User'  is null.");
         }
 
         // GET: User/Details/5
@@ -60,7 +60,7 @@ namespace MvcMovie.Controllers
         public async Task<IActionResult> Create([Bind("UserId,Username,Password,Email")] User user)
         {
             user.Password = Utils.Utils.EncryptPassword(user.Password);
-            
+
             if (ModelState.IsValid)
             {
                 _context.Add(user);
@@ -70,24 +70,6 @@ namespace MvcMovie.Controllers
             return View(user);
         }
 
-
-        // GET: User/Login
-        public IActionResult Login()
-        {
-            return View();
-        }
-        //Post: User/Login
-        [HttpPost ("User/Login")]
-        public async Task<IActionResult> Login([Bind("Email,Password")] User user)
-        {
-            user.Password = Utils.Utils.EncryptPassword(user.Password);
-            var userDb = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
-            if (userDb != null)
-            {
-                return RedirectToAction("Index", "Open");
-            }
-            return RedirectToAction("Index", "Error");
-        }
         // GET: User/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -139,8 +121,8 @@ namespace MvcMovie.Controllers
             return View(user);
         }
 
-        
-        
+
+
         // GET: User/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -173,14 +155,14 @@ namespace MvcMovie.Controllers
             {
                 _context.User.Remove(user);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
         {
-          return (_context.User?.Any(e => e.UserId == id)).GetValueOrDefault();
+            return (_context.User?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
     }
 }
