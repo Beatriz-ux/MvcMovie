@@ -49,6 +49,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Artist/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -71,6 +72,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Artist/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Artist == null)
@@ -122,6 +124,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Artist/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Artist == null)

@@ -22,7 +22,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies
-        
+        [Authorize(Roles = "admin")]      
         public async Task<IActionResult> Index()
         {
             var mvcMovieContext = _context.Movie.Include(m => m.Studio);
@@ -31,6 +31,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies/Details/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Movie == null)
@@ -51,6 +52,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             ViewData["StudioId"] = new SelectList(_context.Set<Studio>(), "StudioId", "Name");
@@ -110,6 +112,7 @@ namespace MvcMovie.Controllers
 
 
         // GET: Movies/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -203,6 +206,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Movie == null)
