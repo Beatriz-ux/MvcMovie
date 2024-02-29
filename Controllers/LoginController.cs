@@ -34,9 +34,11 @@ public class LoginController : Controller
             if (userDb.Email == "admin@admin.com")
             {
                 _token = _authService.GenerateJwtToken(user.Email, "admin");
-                return RedirectToAction("Index", "Admin");
+                HttpContext.Session.SetString("JWT_TOKEN", _token);
+                return RedirectToAction("Index", "Home");
             }
             _token = _authService.GenerateJwtToken(user.Email, "user");
+            HttpContext.Session.SetString("JWT_TOKEN", _token);
             return RedirectToAction("Index", "Open");
         }
         return RedirectToAction("Index", "Error");
