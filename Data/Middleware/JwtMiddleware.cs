@@ -20,9 +20,13 @@ namespace MvcMovie.Data.Auth.Middleware
 
             if (!string.IsNullOrEmpty(token))
             {
-                context.Request.Headers.Add("Authorization", $"Bearer {token}");
+                context.Response.Cookies.Append("JWT_TOKEN", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = context.Request.IsHttps,
+                    SameSite = SameSiteMode.Strict
+                });
             }
-
             await _next(context);
         }
     }
