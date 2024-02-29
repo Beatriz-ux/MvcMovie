@@ -12,7 +12,7 @@ using MvcMovie.Models;
 
 namespace MvcMovie.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     public class UserController : Controller
     {
         private readonly MvcMovieContext _context;
